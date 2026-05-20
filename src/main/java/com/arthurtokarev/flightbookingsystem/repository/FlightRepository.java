@@ -5,15 +5,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface FlightRepository extends JpaRepository<Flight, Long> {
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+public interface FlightRepository
+        extends JpaRepository<Flight, Long> {
+
+    Page<Flight> findAll(Pageable pageable);
 
     Page<Flight> findByDepartureCityContainingIgnoreCase(
             String departureCity,
             Pageable pageable
     );
 
-    Page<Flight> findByArrivalCityContainingIgnoreCase(
-            String arrivalCity,
+    Page<Flight> findByPriceBetween(
+            Double minPrice,
+            Double maxPrice,
             Pageable pageable
     );
 }

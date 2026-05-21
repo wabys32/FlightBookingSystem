@@ -12,8 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.arthurtokarev.flightbookingsystem.security.ArthurTokarevAccessDeniedHandler;
-import com.arthurtokarev.flightbookingsystem.security.ArthurTokarevJwtAuthenticationEntryPoint;
+import com.arthurtokarev.flightbookingsystem.security.JwtAccessDeniedHandler;
+import com.arthurtokarev.flightbookingsystem.security.JwtAuthenticationEntryPoint;
 import com.arthurtokarev.flightbookingsystem.security.JwtAuthenticationFilter;
 
 @Configuration
@@ -21,8 +21,8 @@ import com.arthurtokarev.flightbookingsystem.security.JwtAuthenticationFilter;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final ArthurTokarevJwtAuthenticationEntryPoint authenticationEntryPoint;
-    private final ArthurTokarevAccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {

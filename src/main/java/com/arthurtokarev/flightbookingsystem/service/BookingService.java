@@ -11,12 +11,14 @@ import com.arthurtokarev.flightbookingsystem.repository.BookingRepository;
 import com.arthurtokarev.flightbookingsystem.repository.FlightRepository;
 import com.arthurtokarev.flightbookingsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookingService {
 
     private final BookingRepository bookingRepository;
@@ -54,6 +56,13 @@ public class BookingService {
         bookingRepository.save(booking);
 
         flightRepository.save(flight);
+
+        log.info(
+                "Created booking {} for user {} on flight {}",
+                booking.getId(),
+                user.getUsername(),
+                flight.getFlightNumber()
+        );
 
         return BookingResponseDto.builder()
                 .bookingId(booking.getId())

@@ -6,13 +6,14 @@ import com.arthurtokarev.flightbookingsystem.entity.Flight;
 import com.arthurtokarev.flightbookingsystem.mapper.FlightMapper;
 import com.arthurtokarev.flightbookingsystem.repository.FlightRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.*;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FlightService {
 
     private final FlightRepository flightRepository;
@@ -24,6 +25,8 @@ public class FlightService {
         Flight flight = FlightMapper.toEntity(dto);
 
         Flight savedFlight = flightRepository.save(flight);
+
+        log.info("Created flight {}", savedFlight.getFlightNumber());
 
         return FlightMapper.toDto(savedFlight);
     }

@@ -7,12 +7,14 @@ import com.arthurtokarev.flightbookingsystem.exception.DuplicateResourceExceptio
 import com.arthurtokarev.flightbookingsystem.mapper.UserMapper;
 import com.arthurtokarev.flightbookingsystem.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -26,6 +28,8 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
 
+        log.info("Created USER account with username {}", savedUser.getUsername());
+
         return UserMapper.toDto(savedUser);
     }
 
@@ -35,6 +39,8 @@ public class UserService {
         user.setRole("ADMIN");
 
         User savedUser = userRepository.save(user);
+
+        log.info("Created ADMIN account with username {}", savedUser.getUsername());
 
         return UserMapper.toDto(savedUser);
     }

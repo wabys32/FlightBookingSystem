@@ -1,6 +1,7 @@
 package com.arthurtokarev.flightbookingsystem.exception;
 
 import com.arthurtokarev.flightbookingsystem.payload.ErrorResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,12 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(
             BadCredentialsException ex
     ) {
+
+        log.warn("Authentication failed: {}", ex.getMessage());
 
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -39,6 +43,8 @@ public class GlobalExceptionHandler {
             DuplicateResourceException ex
     ) {
 
+        log.warn("Duplicate resource: {}", ex.getMessage());
+
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.CONFLICT.value())
@@ -56,6 +62,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleFileStorage(
             FileStorageException ex
     ) {
+
+        log.warn("File storage error: {}", ex.getMessage());
 
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
@@ -75,6 +83,8 @@ public class GlobalExceptionHandler {
             ResourceNotFoundException ex
     ) {
 
+        log.warn("Resource not found: {}", ex.getMessage());
+
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
@@ -93,6 +103,8 @@ public class GlobalExceptionHandler {
             NoAvailableSeatsException ex
     ) {
 
+        log.warn("No available seats: {}", ex.getMessage());
+
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.BAD_REQUEST.value())
@@ -110,6 +122,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleValidation(
             MethodArgumentNotValidException ex
     ) {
+
+        log.warn("Validation failed: {}", ex.getMessage());
 
         Map<String, String> validationErrors =
                 new HashMap<>();
@@ -146,6 +160,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex
     ) {
+
+        log.error("Unhandled exception", ex);
 
         ErrorResponse error = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())

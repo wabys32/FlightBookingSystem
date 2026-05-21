@@ -6,6 +6,7 @@ import com.arthurtokarev.flightbookingsystem.exception.FileStorageException;
 import com.arthurtokarev.flightbookingsystem.exception.ResourceNotFoundException;
 import com.arthurtokarev.flightbookingsystem.repository.FileAttachmentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -25,6 +26,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileStorageService {
 
     private final FileAttachmentRepository fileAttachmentRepository;
@@ -75,7 +77,16 @@ public class FileStorageService {
                 .uploadedAt(LocalDateTime.now())
                 .build();
 
-        return toDto(fileAttachmentRepository.save(attachment));
+        FileAttachment savedAttachment =
+                fileAttachmentRepository.save(attachment);
+
+        log.info(
+                "Stored file {} as {}",
+                savedAttachment.getOriginalFileName(),
+                savedAttachment.getStoredFileName()
+        );
+
+        return toDto(savedAttachment);
     }
 
     public List<FileResponseDto> getAllFiles() {

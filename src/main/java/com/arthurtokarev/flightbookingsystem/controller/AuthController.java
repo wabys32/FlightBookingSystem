@@ -3,6 +3,7 @@ package com.arthurtokarev.flightbookingsystem.controller;
 import com.arthurtokarev.flightbookingsystem.dto.AuthResponseDto;
 import com.arthurtokarev.flightbookingsystem.dto.LoginRequestDto;
 import com.arthurtokarev.flightbookingsystem.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponseDto login(
-            @RequestBody LoginRequestDto dto
+            @Valid @RequestBody LoginRequestDto dto
     ) {
 
         return authService.login(dto);

@@ -61,7 +61,7 @@ public class JwtAuthenticationFilter
                     userDetailsService
                             .loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(jwt)) {
+            if (jwtUtil.validateToken(jwt, userDetails)) {
 
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(

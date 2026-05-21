@@ -3,6 +3,7 @@ package com.arthurtokarev.flightbookingsystem.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -25,11 +26,13 @@ public class JwtUtil {
     }
 
     public String generateToken(
-            String username
+            String username,
+            String role
     ) {
 
         return Jwts.builder()
                 .setSubject(username)
+                .claim("role", role)
                 .setIssuedAt(new Date())
                 .setExpiration(
                         new Date(
@@ -57,17 +60,20 @@ public class JwtUtil {
     }
 
     public boolean validateToken(
-            String token
+            String token,
+            UserDetails userDetails
     ) {
 
         try {
 
-            Jwts.parserBuilder()
+            Claims claims = Jwts.parserBuilder()
                     .setSigningKey(getSigningKey())
                     .build()
-                    .parseClaimsJws(token);
+                    .parseClaimsJws(token)
+                    .getBody();
 
-            return true;
+            return claims.getSubject()
+                    .equals(userDetails.getUsername());
 
         } catch (JwtException ex) {
 

@@ -2,6 +2,7 @@ package com.arthurtokarev.flightbookingsystem.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -11,21 +12,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.arthurtokarev.flightbookingsystem.security.ArthurTokarevAccessDeniedHandler;
+import com.arthurtokarev.flightbookingsystem.security.ArthurTokarevJwtAuthenticationEntryPoint;
 import com.arthurtokarev.flightbookingsystem.security.JwtAuthenticationFilter;
-
-/* This config is temporary
-later it will be replaced with
-- JWT authentication
-- secure endpoints
-- role-based authorization
-- stateless sessions
- */
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final ArthurTokarevJwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final ArthurTokarevAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -44,13 +41,23 @@ public class SecurityConfig {
                                 SessionCreationPolicy.STATELESS
                         )
                 )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/api/users/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/actuator/health"
                         ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/flights").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/flights/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/bookings").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/users/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )

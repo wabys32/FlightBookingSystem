@@ -3,10 +3,10 @@ package com.arthurtokarev.flightbookingsystem.service;
 import com.arthurtokarev.flightbookingsystem.dto.AuthResponseDto;
 import com.arthurtokarev.flightbookingsystem.dto.LoginRequestDto;
 import com.arthurtokarev.flightbookingsystem.entity.User;
-import com.arthurtokarev.flightbookingsystem.exception.ResourceNotFoundException;
 import com.arthurtokarev.flightbookingsystem.repository.UserRepository;
 import com.arthurtokarev.flightbookingsystem.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +25,8 @@ public class AuthService {
         User user = userRepository
                 .findByUsername(dto.getUsername())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User not found"
+                        new BadCredentialsException(
+                                "Invalid username or password"
                         )
                 );
 
@@ -38,14 +38,15 @@ public class AuthService {
 
         if (!matches) {
 
-            throw new RuntimeException(
-                    "Invalid password"
+            throw new BadCredentialsException(
+                    "Invalid username or password"
             );
         }
 
         String token =
                 jwtUtil.generateToken(
-                        user.getUsername()
+                        user.getUsername(),
+                        user.getRole()
                 );
 
         return new AuthResponseDto(token);

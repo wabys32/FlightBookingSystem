@@ -29,12 +29,16 @@ public class CustomUserDetailsService
                         )
                 );
 
+        String role = user.getRole() == null || user.getRole().isBlank()
+                ? "USER"
+                : user.getRole().trim().toUpperCase();
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
                 List.of(
                         new SimpleGrantedAuthority(
-                                "ROLE_" + user.getRole()
+                                "ROLE_" + role
                         )
                 )
         );

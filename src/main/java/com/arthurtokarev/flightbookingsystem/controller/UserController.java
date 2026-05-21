@@ -21,4 +21,12 @@ public class UserController {
 
         return userService.createUser(dto);
     }
+
+    @PostMapping("/admin")
+    public UserResponseDto createAdminUser(
+            @Valid @RequestBody UserRequestDto dto
+    ) {
+
+        return userService.createAdminUser(dto);
+    }
 }
